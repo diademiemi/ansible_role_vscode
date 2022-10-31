@@ -1,0 +1,48 @@
+---
+- name: Add VSCode RPM repository
+  become: true
+  ansible.builtin.yum_repository:
+    name: vscode
+    description: Visual Studio Code
+    baseurl: https://packages.microsoft.com/yumrepos/vscode
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    gpgcheck: true
+    enabled: true
+  when: ansible_os_family == "RedHat"
+
+- name: Add VSCode Apt key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Add VSCode Apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/repos/vscode stable main
+    state: present
+    filename: vscode
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install Apt HTTPS transport
+  become: true
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install and update VSCode
+  become: true
+  ansible.builtin.package:
+    name: code
+    state: latest
+
+- name: Install VSCode extensions
+  become: true
+  become_user: "{{ vscode_user }}"
+  ansible.builtin.command: code --install-extension {{ item }}
+  loop: "{{ vscode_extensions }}"
+  when: vscode_extensions is defined
