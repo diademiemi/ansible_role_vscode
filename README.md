@@ -1,8 +1,7 @@
 # Ansible Role VSCode
 This is an Ansible role that installs VSCode on Linux. It uses the Debian or RPM packages from Microsoft.  
 
-Tested on Fedora 36, should work on any Linux distribution that the Discord tarball supports.  
-
+Tested on Fedora 36 and Ubuntu 20.04, should work on any Linux distribution that the VSCode packages support.  
 ## Requirements
 
 ### Base requirements
