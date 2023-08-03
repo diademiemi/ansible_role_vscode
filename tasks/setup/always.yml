@@ -1,0 +1,47 @@
+---
+- name: Install VSCode extensions
+  become: "{% if vscode_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ vscode_user | default(omit) }}"
+  ansible.builtin.shell: |
+    {{ vscode_channel_map[vscode_channel].command_name }} \
+    {% if item.state is defined %}
+    {% if item.state == 'absent' %}--uninstall-extension \{% else %}--install-extension \{% endif %}
+    {% else %}--install-extension \{% endif %}
+    {% if item.name is defined %}{{ item.name }} \
+    {% if item.pre_release is defined and item.pre_release %}--pre-release \{% endif %}
+    {% else %}{{ item }} \{% endif %}
+  loop: "{{ vscode_extensions }}"
+  register: vscode_extensions_install
+  failed_when: |
+    vscode_extensions_install.rc != 0 and not (item.state is defined and item.state == 'absent' and 'is not installed' in vscode_extensions_install.stderr)
+  changed_when: |
+    vscode_extensions_install.rc == 0 and "is already installed" not in vscode_extensions_install.stderr or
+    vscode_extensions_install.rc != 0 and item.state is defined and item.state == 'absent' and 'is not installed' in vscode_extensions_install.stdout
+  when: vscode_extensions | length > 0 and 'molecule-idempotence-notest' not in ansible_skip_tags
+
+- name: Check if config already exists
+  become: "{% if vscode_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ vscode_user | default(omit) }}"
+  ansible.builtin.stat:
+    path: "{{ vscode_channel_map[vscode_channel].config_dir }}/User/settings.json"
+  register: vscode_config_exists
+
+- name: Ensure config directory exists
+  become: "{% if vscode_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ vscode_user | default(omit) }}"
+  ansible.builtin.file:
+    path: "{{ vscode_channel_map[vscode_channel].config_dir }}/User"
+    state: directory
+    mode: "0755"
+  when: not vscode_config_exists.stat.exists
+
+- name: Set up VSCode config
+  become: "{% if vscode_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ vscode_user | default(omit) }}"
+  ansible.builtin.copy:
+    content: "{{ vscode_settings | to_nice_json }}"
+    dest: "{{ vscode_channel_map[vscode_channel].config_dir }}/User/settings.json"
+    mode: "0644"
+  when: vscode_overwrite_settings or not vscode_config_exists.stat.exists
+
+...

@@ -1,0 +1,19 @@
+---
+- name: Add VSCode RPM repository
+  become: true
+  ansible.builtin.yum_repository:
+    name: vscode
+    description: Visual Studio Code
+    baseurl: https://packages.microsoft.com/yumrepos/vscode
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    gpgcheck: true
+    enabled: true
+
+- name: Install VSCode
+  become: true
+  ansible.builtin.yum:
+    name: "{{ vscode_channel_map[vscode_channel].package_name }}"
+    state: present
+    update_cache: true
+
+...

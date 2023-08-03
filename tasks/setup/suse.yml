@@ -1,0 +1,22 @@
+---
+- name: Import RPM key
+  become: true
+  ansible.builtin.rpm_key:
+    key: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+
+- name: Add VSCode RPM repository
+  become: true
+  community.general.zypper_repository:
+    name: vscode
+    description: Visual Studio Code
+    repo: https://packages.microsoft.com/yumrepos/vscode
+
+- name: Install VSCode
+  become: true
+  community.general.zypper:
+    name: "{{ vscode_channel_map[vscode_channel].package_name }}"
+    state: present
+    update_cache: true
+
+...

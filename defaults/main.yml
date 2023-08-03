@@ -1,2 +1,23 @@
 ---
+vscode_channel: "stable"
+
+vscode_channel_map: "{{ _vscode_channel_map }}"
+
 vscode_user: "{{ ansible_user_id }}"
+vscode_extensions: []
+  # - name: github.copilot
+  #   state: absent
+  # - github.copilot
+  # - name: github.copilot
+  # - name: github.copilot
+  #   pre_release: true
+  # - name: github.copilot
+  #   state: absent
+
+vscode_overwrite_settings: false
+vscode_settings: {
+  # "git.autofetch": true,
+  # "git.confirmSync": false,
+}
+
+...

@@ -1,0 +1,12 @@
+---
+vscode_extensions:
+  - name: github.copilot
+    state: absent
+  - github.copilot
+  - name: github.copilot
+  - name: github.copilot
+    pre_release: true
+  - name: github.copilot
+    state: absent
+
+...

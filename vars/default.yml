@@ -1,0 +1,12 @@
+---
+_vscode_channel_map:
+  "stable":
+    package_name: "code"
+    command_name: "code"
+    config_dir: "~/.config/Code"
+  "insiders":
+    package_name: "code-insiders"
+    command_name: "code-insiders"
+    config_dir: "~/.config/Code - Insiders"
+
+...
