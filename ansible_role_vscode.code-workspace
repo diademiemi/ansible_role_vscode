@@ -23,7 +23,6 @@
 			"**/terraform/**": "terraform",
 			"**/inventories/terraform/**": "ansible"
 		},
-		"workbench.iconTheme": "catppuccin-mocha"
 	},
 	"extensions": {
 		"recommendations": [
